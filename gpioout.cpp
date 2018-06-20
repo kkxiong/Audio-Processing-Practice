@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "matrix_hal/everloop.h"
 #include "matrix_hal/everloop_image.h"
 #include "matrix_hal/gpio_control.h"
@@ -14,13 +15,15 @@ namespace hal = matrix_hal;
 
 #define CLK_FRQ 200000000
 
-int gpioout(uint16_t write_data) {
-  hal::MatrixIOBus bus;
-  if (!bus.Init()) return false;
+bool gpioout(hal::MatrixIOBus *bus, uint16_t write_data) {
+//bool gpioout(uint16_t write_data) {
+  //hal::MatrixIOBus bus;
+  //if (!bus.Init()) return false;
+  if (bus == NULL) return  false;
 
   hal::GPIOControl gpio;
-  gpio.Setup(&bus);
-  unsigned char outputPinList[8] = {0, 2, 4, 6, 8, 10, 12, 14, 1, 3, 5, 7, 9, 11, 13, 15};
+  gpio.Setup(bus);
+  unsigned char outputPinList[16] = {0, 2, 4, 6, 8, 10, 12, 14, 1, 3, 5, 7, 9, 11, 13, 15};
 
   gpio.SetMode(outputPinList, sizeof(outputPinList), OUTPUT);
 
@@ -39,5 +42,5 @@ int gpioout(uint16_t write_data) {
   // stop bit
   gpio.SetGPIOValues(outputPinList, sizeof(outputPinList), 1);
 
-  return 0;
+  return true;
 }
